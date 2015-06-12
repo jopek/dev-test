@@ -41,4 +41,10 @@ public class Suggestion {
   public String toCsv() {
     return String.format("%d,%s,%s,%f,%f\n", id, name, type, latitude, longitude);
   }
+
+  @Override
+  public String toString() {
+    return String.format("Id: %d, Name: %s, Type: %s, Latitude: %f, Longitude: %f",
+        id, name, type, latitude, longitude);
+  }
 }

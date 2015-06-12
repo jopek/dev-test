@@ -3,6 +3,11 @@ buildscript {
         mavenCentral()
         jcenter()
     }
+
+    dependencies{
+        classpath "org.apache.httpcomponents:httpclient:4.5",
+                "com.fasterxml.jackson.core:jackson-databind:2.5.3"
+    }
 }
 
 apply plugin: 'java'
@@ -55,8 +60,8 @@ task wrapper(type: Wrapper) {
 }
 
 task run(type: JavaExec) {
+    dependsOn jar
     main = "-jar"
-    // build/libs/dev-0.0.1-SNAPSHOT.jar
     args = ["build/libs/${baseName}-${version}.jar"]
 }
 

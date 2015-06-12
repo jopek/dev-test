@@ -1,6 +1,5 @@
 package devtest;
 
-import devtest.Exceptions.FileWriterException;
 import devtest.entities.Suggestion;
 import devtest.goeuro.LocationType;
 import devtest.goeuro.SuggestionApi;
@@ -12,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +42,9 @@ public class LocationToCsvTest {
   }
 
   @Test
-  public void queryApiAllOk() throws FileWriterException {
-    when(suggestionApi.getSuggestionByName(anyString())).thenReturn(createSuggestDtoList(2));
+  public void queryApiAllOk() throws IOException {
+    when(suggestionApi.getSuggestionByName(anyString())).
+        thenReturn(createSuggestDtoList(2));
     locationToCsv.execute(CITY);
 
     verify(suggestionApi).getSuggestionByName(CITY);
@@ -51,14 +52,14 @@ public class LocationToCsvTest {
   }
 
   @Test
-  public void queryApiWithoutCityName() throws FileWriterException {
+  public void queryApiWithoutCityName() throws IOException {
     locationToCsv.execute("");
 
     verify(suggestionApi, never()).getSuggestionByName(anyString());
   }
 
   @Test
-  public void queryApiWithoutResults() throws FileWriterException {
+  public void queryApiWithoutResults() throws IOException {
     when(suggestionApi.getSuggestionByName(CITY)).thenReturn(anyListOf(SuggestDto.class));
     locationToCsv.execute(CITY);
 
@@ -66,49 +67,41 @@ public class LocationToCsvTest {
     verify(csvFileWriter, never()).write(any(Suggestion.class));
   }
 
+  @Test
+  public void queryApiWithNetworkException() throws IOException {
+    doThrow(new IOException("laaaa")).when(suggestionApi).getSuggestionByName(CITY);
+    locationToCsv.execute(CITY);
+
+    verify(suggestionApi).getSuggestionByName(CITY);
+    verify(csvFileWriter, never()).write(any(Suggestion.class));
+    verify(csvFileWriter, never()).close();
+  }
+
   // convenience methods
 
   private List<SuggestDto> createSuggestDtoList(int count) {
     List<SuggestDto> list = new ArrayList<>();
     for (int i = 0; i < count; i++) {
-      SuggestDto dto = createSuggestDto(true);
+      SuggestDto dto = createSuggestDto();
       list.add(dto);
     }
     return list;
   }
 
-  private SuggestDto createSuggestDto(boolean inEurope) {
+  private SuggestDto createSuggestDto() {
     SuggestDto dto = new SuggestDto();
-
-    if (!inEurope) {
-      dto.setCoreCountry(false);
-      dto.setCountry("Thailand");
-      dto.setCountryCode("TH");
-      dto.setDistance(null);
-      dto.setFullName("Bangkok, Thailand");
-      dto.setGeoPosition(new GeoPositionDto(13.6923, 100.7507));
-      dto.setIata_airport_code(null);
-      dto.setInEurope(false);
-      dto.setKey(null);
-      dto.setLocationId(38910);
-      dto.setName("Bangkok");
-      dto.setType(LocationType.location);
-
-    } else {
-      dto.setCoreCountry(true);
-      dto.setCountry("Germany");
-      dto.setCountryCode("DE");
-      dto.setDistance(null);
-      dto.setFullName("Berlin Schönefeld (SXF), Germany");
-      dto.setGeoPosition(new GeoPositionDto(52.3887261, 13.5180874));
-      dto.setIata_airport_code("SXF");
-      dto.setInEurope(true);
-      dto.setKey(null);
-      dto.setLocationId(null);
-      dto.setName("Berlin Schönefeld");
-      dto.setType(LocationType.airport);
-    }
-
+    dto.setCoreCountry(true);
+    dto.setCountry("Germany");
+    dto.setCountryCode("DE");
+    dto.setDistance(null);
+    dto.setFullName("Berlin Schönefeld (SXF), Germany");
+    dto.setGeoPosition(new GeoPositionDto(52.3887261, 13.5180874));
+    dto.setIata_airport_code("SXF");
+    dto.setInEurope(true);
+    dto.setKey(null);
+    dto.setLocationId(null);
+    dto.setName("Berlin Schönefeld");
+    dto.setType(LocationType.airport);
     return dto;
   }
 }

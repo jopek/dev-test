@@ -4,14 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import devtest.goeuro.dto.SuggestDto;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,31 +29,21 @@ public class SuggestionApiImpl implements SuggestionApi {
   }
 
   @Override
-  public List<SuggestDto> getSuggestionByName(String cityName) {
-    return executeAndHandle(String.format(API_URL, cityName));
+  public List<SuggestDto> getSuggestionByName(String cityName) throws IOException {
+    InputStream content = retrieveContent(String.format(API_URL, cityName));
+    return mapper.readValue(content, new TypeReference<List<SuggestDto>>() {});
   }
 
-  private List<SuggestDto> executeAndHandle(String url) {
+  private InputStream retrieveContent(String url) throws IOException {
     CloseableHttpClient httpClient = httpClientFactory.createHttpClient();
-
     HttpGet httpGet = new HttpGet(url);
 
-    try {
-      CloseableHttpResponse response = httpClient.execute(httpGet);
-      HttpEntity entity = response.getEntity();
-      InputStream content = entity.getContent();
+    CloseableHttpResponse response = httpClient.execute(httpGet);
+    HttpEntity entity = response.getEntity();
 
-      return mapper.readValue(content, new TypeReference<List<SuggestDto>>() {});
-
-    } catch (ClientProtocolException e) {
-      e.printStackTrace();
-      return new ArrayList<>();
-
-    } catch (IOException e) {
-      e.printStackTrace();
-      return new ArrayList<>();
-    }
-
+    httpClient.close();
+    response.close();
+    return entity.getContent();
   }
 
 }

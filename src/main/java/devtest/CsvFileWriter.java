@@ -22,7 +22,7 @@ public class CsvFileWriter {
     try {
       fileWriter = new FileWriter(filename, true);
     } catch (IOException e) {
-      throw new FileWriterException("FileWriter failed to initialize...", e);
+      throw new FileWriterException("FileWriter failed to initialize; " + e.getCause(), e);
     }
   }
 
@@ -33,11 +33,16 @@ public class CsvFileWriter {
 
     try {
       fileWriter.append(suggestion.toCsv());
-    } catch (IOException writeException) {
-      throw new FileWriterException("Failed to write to " + filename + "CSV file.");
+    } catch (IOException e) {
+      throw new FileWriterException("Failed to write to " + filename + " CSV file. " + e.getCause(), e);
     }
-
-
   }
 
+  public void close() throws FileWriterException {
+    try {
+      fileWriter.close();
+    } catch (IOException e) {
+      throw new FileWriterException("FileWriter failed to close file; " + e.getCause(), e);
+    }
+  }
 }

@@ -74,7 +74,8 @@ public class SuggestionApiImplTest {
     when(closeableHttpClient.execute(any(HttpGet.class))).thenReturn(closeableHttpResponse);
     when(closeableHttpResponse.getEntity()).thenReturn(httpEntity);
     when(httpEntity.getContent()).thenReturn(inputStream);
-    when(jsonObjectMapper.readValue(inputStream, TypeReference.class)).thenReturn(suggestDtoList);
+    when(jsonObjectMapper.readValue(eq(inputStream), typeReferenceArgumentCaptor.capture())).
+        thenReturn(suggestDtoList);
 
     suggestionApi.getSuggestionByName(CITY);
     verify(httpClientFactory).createHttpClient();
@@ -82,10 +83,9 @@ public class SuggestionApiImplTest {
     String actualGetUri = httpGetArgumentCaptor.getValue().getURI().toString();
     assertEquals(String.format(SuggestionApiImpl.API_URL, CITY), actualGetUri);
     verify(jsonObjectMapper).readValue(eq(inputStream), typeReferenceArgumentCaptor.capture());
-    assertEquals("ll", typeReferenceArgumentCaptor.getValue().getType());
   }
 
-  @Test
+  @Test(expected = IOException.class)
   public void makeCallFailsBecauseTransportError() throws IOException {
     doThrow(new IOException()).when(closeableHttpClient).execute(any(HttpGet.class));
 
@@ -93,16 +93,17 @@ public class SuggestionApiImplTest {
     verify(jsonObjectMapper, never()).readValue(eq(inputStream), any(TypeReference.class));
   }
 
-  @Test
+  @Test(expected = JsonParseException.class)
   public void makeCallFailsBecauseJsonParsingError() throws IOException {
     when(closeableHttpClient.execute(any(HttpGet.class))).thenReturn(closeableHttpResponse);
     when(closeableHttpResponse.getEntity()).thenReturn(httpEntity);
     when(httpEntity.getContent()).thenReturn(inputStream);
-    doThrow(new JsonParseException("couldn't parse.", JsonLocation.NA)).when(jsonObjectMapper)
-        .readValue(eq(inputStream), any(TypeReference.class));
+
+    doThrow(new JsonParseException("couldn't parse.", JsonLocation.NA)).
+        when(jsonObjectMapper).
+        readValue(eq(inputStream), typeReferenceArgumentCaptor.capture());
 
     suggestionApi.getSuggestionByName(CITY);
-//    verify(jsonObjectMapper).readValue(eq(inputStream), any(TypeReference.class));
   }
 
 }

@@ -6,6 +6,7 @@ import devtest.entities.SuggestionConverter;
 import devtest.goeuro.SuggestionApi;
 import devtest.goeuro.dto.SuggestDto;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -27,19 +28,31 @@ public class LocationToCsv {
       return;
     }
 
-    List<SuggestDto> dtos = suggestionApi.getSuggestionByName(locationQueryName);
+    List<SuggestDto> dtos = null;
+    try {
+      dtos = suggestionApi.getSuggestionByName(locationQueryName);
+    } catch (IOException e) {
+      System.out.println("could not fetch suggestions: " + ((e.getCause() != null) ? e.getCause() : e.toString()));
+      return;
+    }
 
     if (dtos.isEmpty()) {
+      System.out.println("empty list of suggestions");
       return;
+    } else {
+      System.out.println(String.format("found %d suggestions", dtos.size()));
     }
 
     try {
       for (SuggestDto dto : dtos) {
         Suggestion suggestion = SuggestionConverter.toEntity(dto);
+        System.out.println(suggestion.toString());
         writer.write(suggestion);
       }
+      writer.close();
+
     } catch (FileWriterException e) {
-      System.err.println("cannot write suggestions to CSV file: " + e.getMessage());
+      System.out.println("cannot write suggestions to CSV file: " + e.getCause());
       return;
     }
   }
