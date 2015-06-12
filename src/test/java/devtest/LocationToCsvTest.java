@@ -1,5 +1,7 @@
 package devtest;
 
+import devtest.Exceptions.FileWriterException;
+import devtest.entities.Suggestion;
 import devtest.goeuro.LocationType;
 import devtest.goeuro.SuggestionApi;
 import devtest.goeuro.dto.GeoPositionDto;
@@ -10,20 +12,24 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * This test focuses on the {@link LocationToCsv} converter functionality.
  */
 
 @RunWith(MockitoJUnitRunner.class)
-public class TestApplicationTests {
+public class LocationToCsvTest {
+
+  public static final String CITY = "someCity";
 
   @Mock
-  private FileWriter fileWriter;
+  private CsvFileWriter csvFileWriter;
 
   @Mock
   private SuggestionApi suggestionApi;
@@ -32,22 +38,49 @@ public class TestApplicationTests {
 
   @Before
   public void setup() {
-    when(suggestionApi.getSuggestionByName(anyString())).thenReturn(createSuggestDto(true));
-    locationToCsv = new LocationToCsv(suggestionApi, fileWriter);
+    locationToCsv = new LocationToCsv(csvFileWriter, suggestionApi);
   }
-
-  // ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ====
 
   @Test
-  public void writeFileOn() {
+  public void queryApiAllOk() throws FileWriterException {
+    when(suggestionApi.getSuggestionByName(anyString())).thenReturn(createSuggestDtoList(2));
+    locationToCsv.execute(CITY);
+
+    verify(suggestionApi).getSuggestionByName(CITY);
+    verify(csvFileWriter, times(2)).write(any(Suggestion.class));
   }
 
-  // ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ====
+  @Test
+  public void queryApiWithoutCityName() throws FileWriterException {
+    locationToCsv.execute("");
+
+    verify(suggestionApi, never()).getSuggestionByName(anyString());
+  }
+
+  @Test
+  public void queryApiWithoutResults() throws FileWriterException {
+    when(suggestionApi.getSuggestionByName(CITY)).thenReturn(anyListOf(SuggestDto.class));
+    locationToCsv.execute(CITY);
+
+    verify(suggestionApi).getSuggestionByName(CITY);
+    verify(csvFileWriter, never()).write(any(Suggestion.class));
+  }
+
+  // convenience methods
+
+  private List<SuggestDto> createSuggestDtoList(int count) {
+    List<SuggestDto> list = new ArrayList<>();
+    for (int i = 0; i < count; i++) {
+      SuggestDto dto = createSuggestDto(true);
+      list.add(dto);
+    }
+    return list;
+  }
 
   private SuggestDto createSuggestDto(boolean inEurope) {
     SuggestDto dto = new SuggestDto();
 
-    if (inEurope) {
+    if (!inEurope) {
       dto.setCoreCountry(false);
       dto.setCountry("Thailand");
       dto.setCountryCode("TH");
