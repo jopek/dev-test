@@ -1,0 +1,69 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'devtest.Application'
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'devtest.Application'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+
+test{
+    testLogging{
+        events "passed", "skipped", "failed"
+        info {
+            events "passed", "skipped", "failed"
+            exceptionFormat "full"
+        }
+    }
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.apache.httpcomponents:httpclient:4.5")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.5.3")
+    compile("javax.json:javax.json-api:1.0")
+
+    testCompile("org.mockito:mockito-all:1.10.19")
+    testCompile("junit:junit:4.11")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
+
+task run(type: JavaExec) {
+    main = "-jar"
+    // build/libs/dev-0.0.1-SNAPSHOT.jar
+    args = ["build/libs/${baseName}-${version}.jar"]
+}
+
+task runFatJar(type: JavaExec) {
+    dependsOn fatJar
+    main = "-jar"
+    // build/libs/dev-0.0.1-SNAPSHOT.jar
+    args = ["build/libs/${baseName}-${version}.jar"]
+}
+
