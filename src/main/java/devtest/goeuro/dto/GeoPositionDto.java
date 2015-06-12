@@ -6,6 +6,7 @@ package devtest.goeuro.dto;
 public class GeoPositionDto {
 
   private double latitude;
+
   private double longitude;
 
   public GeoPositionDto(double latitude, double longitude) {
@@ -31,4 +32,13 @@ public class GeoPositionDto {
   public void setLongitude(double longitude) {
     this.longitude = longitude;
   }
+
+  @Override
+  public String toString() {
+    return "GeoPositionDto {" +
+        "latitude: " + latitude +
+        "longitude: " + longitude +
+        "}";
+  }
+
 }

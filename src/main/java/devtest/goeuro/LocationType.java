@@ -8,6 +8,6 @@ package devtest.goeuro;
  * To change this template use File | Settings | File Templates.
  */
 public enum LocationType {
-  LOCATION,
-  AIRPORT
+  location,
+  airport
 }

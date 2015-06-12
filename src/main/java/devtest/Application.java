@@ -1,9 +1,13 @@
 package devtest;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import devtest.goeuro.SuggestionApi;
 import devtest.goeuro.SuggestionApiFactory;
+import devtest.goeuro.dto.SuggestDto;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Application {
 
@@ -18,7 +22,40 @@ public class Application {
     this.suggestionApi = suggestionApi;
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+
+    if (true) {
+      ObjectMapper om;
+      om = new ObjectMapper();
+
+      String content = "[\n" +
+          "  {\n" +
+          "    \"_id\": 406676,\n" +
+          "    \"key\": null,\n" +
+          "    \"name\": \"Bangkok\",\n" +
+          "    \"fullName\": \"Bangkok, Thailand\",\n" +
+          "    \"iata_airport_code\": null,\n" +
+          "    \"type\": \"location\",\n" +
+          "    \"country\": \"Thailand\",\n" +
+          "    \"geo_position\": {\n" +
+          "      \"latitude\": 13.75398,\n" +
+          "      \"longitude\": 100.50144\n" +
+          "    },\n" +
+          "    \"locationId\": 38910,\n" +
+          "    \"inEurope\": false,\n" +
+          "    \"countryCode\": \"TH\",\n" +
+          "    \"coreCountry\": false,\n" +
+          "    \"distance\": null\n" +
+          "  }\n" +
+          "]";
+
+      List<SuggestDto> suggestListDto = om.readValue(content, new TypeReference<List<SuggestDto>>() {});
+
+
+      System.out.println(suggestListDto.toString());
+      return;
+    }
+
     Application app = new Application(getCsvFileWriter(), getSuggestionApi());
     app.run(args);
   }

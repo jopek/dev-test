@@ -92,7 +92,7 @@ public class LocationToCsvTest {
       dto.setKey(null);
       dto.setLocationId(38910);
       dto.setName("Bangkok");
-      dto.setType(LocationType.LOCATION);
+      dto.setType(LocationType.location);
 
     } else {
       dto.setCoreCountry(true);
@@ -106,7 +106,7 @@ public class LocationToCsvTest {
       dto.setKey(null);
       dto.setLocationId(null);
       dto.setName("Berlin Schönefeld");
-      dto.setType(LocationType.AIRPORT);
+      dto.setType(LocationType.airport);
     }
 
     return dto;

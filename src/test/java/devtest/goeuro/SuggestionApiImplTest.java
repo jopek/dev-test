@@ -1,8 +1,10 @@
 package devtest.goeuro;
 
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import devtest.goeuro.dto.SuggestDto;
-import devtest.goeuro.dto.SuggestListDto;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -17,7 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -42,6 +44,9 @@ public class SuggestionApiImplTest {
   @Captor
   private ArgumentCaptor<HttpGet> httpGetArgumentCaptor;
 
+  @Captor
+  private ArgumentCaptor<TypeReference<List<SuggestDto>>> typeReferenceArgumentCaptor;
+
   @Mock
   private CloseableHttpResponse closeableHttpResponse;
 
@@ -54,8 +59,7 @@ public class SuggestionApiImplTest {
   @Mock
   private ObjectMapper jsonObjectMapper;
 
-  @Mock
-  private SuggestListDto suggestListDto;
+  private List<SuggestDto> suggestDtoList;
 
   private SuggestionApi suggestionApi;
 
@@ -70,16 +74,15 @@ public class SuggestionApiImplTest {
     when(closeableHttpClient.execute(any(HttpGet.class))).thenReturn(closeableHttpResponse);
     when(closeableHttpResponse.getEntity()).thenReturn(httpEntity);
     when(httpEntity.getContent()).thenReturn(inputStream);
-    when(jsonObjectMapper.readValue(inputStream, SuggestListDto.class)).thenReturn(suggestListDto);
-    when(suggestListDto.getSuggestions()).thenReturn(new ArrayList<SuggestDto>());
+    when(jsonObjectMapper.readValue(inputStream, TypeReference.class)).thenReturn(suggestDtoList);
 
     suggestionApi.getSuggestionByName(CITY);
     verify(httpClientFactory).createHttpClient();
     verify(closeableHttpClient).execute(httpGetArgumentCaptor.capture());
     String actualGetUri = httpGetArgumentCaptor.getValue().getURI().toString();
     assertEquals(String.format(SuggestionApiImpl.API_URL, CITY), actualGetUri);
-    verify(jsonObjectMapper).readValue(eq(inputStream), eq(SuggestListDto.class));
-    verify(suggestListDto).getSuggestions();
+    verify(jsonObjectMapper).readValue(eq(inputStream), typeReferenceArgumentCaptor.capture());
+    assertEquals("ll", typeReferenceArgumentCaptor.getValue().getType());
   }
 
   @Test
@@ -87,8 +90,19 @@ public class SuggestionApiImplTest {
     doThrow(new IOException()).when(closeableHttpClient).execute(any(HttpGet.class));
 
     suggestionApi.getSuggestionByName(CITY);
-    verify(jsonObjectMapper, never()).readValue(eq(inputStream), eq(SuggestListDto.class));
-    verify(suggestListDto, never()).getSuggestions();
+    verify(jsonObjectMapper, never()).readValue(eq(inputStream), any(TypeReference.class));
+  }
+
+  @Test
+  public void makeCallFailsBecauseJsonParsingError() throws IOException {
+    when(closeableHttpClient.execute(any(HttpGet.class))).thenReturn(closeableHttpResponse);
+    when(closeableHttpResponse.getEntity()).thenReturn(httpEntity);
+    when(httpEntity.getContent()).thenReturn(inputStream);
+    doThrow(new JsonParseException("couldn't parse.", JsonLocation.NA)).when(jsonObjectMapper)
+        .readValue(eq(inputStream), any(TypeReference.class));
+
+    suggestionApi.getSuggestionByName(CITY);
+//    verify(jsonObjectMapper).readValue(eq(inputStream), any(TypeReference.class));
   }
 
 }

@@ -1,5 +1,6 @@
 package devtest.goeuro.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import devtest.goeuro.LocationType;
 
 /**
@@ -7,17 +8,31 @@ import devtest.goeuro.LocationType;
  */
 public class SuggestDto {
   private boolean coreCountry;
+
   private String country;
+
   private String countryCode;
+
   private Integer distance;
+
   private String fullName;
+
+  @JsonProperty("geo_position")
   private GeoPositionDto geoPosition;
+
   private String iata_airport_code;
+
+  @JsonProperty("_id")
   private int id;
+
   private boolean inEurope;
+
   private String key;
+
   private Integer locationId;
+
   private String name;
+
   private LocationType type;
 
   public SuggestDto() {
@@ -125,5 +140,24 @@ public class SuggestDto {
 
   public void setType(LocationType type) {
     this.type = type;
+  }
+
+  @Override
+  public String toString() {
+    return "SuggestDto {" +
+        "coreCountry: " + coreCountry +
+        " country: " + country +
+        " countryCode: " + countryCode +
+        " distance: " + distance +
+        " fullName: " + fullName +
+        " geoPosition: " + geoPosition +
+        " iata_airport_code: " + iata_airport_code +
+        " id: " + id +
+        " inEurope: " + inEurope +
+        " key: " + key +
+        " locationId: " + locationId +
+        " name: " + name +
+        " type: " + type +
+        "}";
   }
 }

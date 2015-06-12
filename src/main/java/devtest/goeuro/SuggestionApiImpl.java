@@ -1,8 +1,8 @@
 package devtest.goeuro;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import devtest.goeuro.dto.SuggestDto;
-import devtest.goeuro.dto.SuggestListDto;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -45,8 +45,7 @@ public class SuggestionApiImpl implements SuggestionApi {
       HttpEntity entity = response.getEntity();
       InputStream content = entity.getContent();
 
-      SuggestListDto listDto = mapper.readValue(content, SuggestListDto.class);
-      return listDto.getSuggestions();
+      return mapper.readValue(content, new TypeReference<List<SuggestDto>>() {});
 
     } catch (ClientProtocolException e) {
       e.printStackTrace();
