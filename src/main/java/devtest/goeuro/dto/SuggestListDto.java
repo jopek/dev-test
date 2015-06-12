@@ -8,6 +8,10 @@ import java.util.List;
 public class SuggestListDto {
   private List<SuggestDto> suggestions;
 
+  public void setSuggestions(List<SuggestDto> suggestions) {
+    this.suggestions = suggestions;
+  }
+
   public List<SuggestDto> getSuggestions() {
     return suggestions;
   }

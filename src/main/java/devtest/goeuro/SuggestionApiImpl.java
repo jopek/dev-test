@@ -1,7 +1,6 @@
 package devtest.goeuro;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import devtest.HttpClientFactory;
 import devtest.goeuro.dto.SuggestDto;
 import devtest.goeuro.dto.SuggestListDto;
 import org.apache.http.HttpEntity;

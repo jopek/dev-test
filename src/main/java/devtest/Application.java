@@ -1,11 +1,9 @@
 package devtest;
 
 import devtest.goeuro.SuggestionApi;
-import devtest.goeuro.dto.SuggestDto;
+import devtest.goeuro.SuggestionApiFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Application {
 
@@ -15,15 +13,14 @@ public class Application {
 
   private SuggestionApi suggestionApi;
 
+  public Application(CsvFileWriter csvFileWriter, SuggestionApi suggestionApi) {
+    this.csvFileWriter = csvFileWriter;
+    this.suggestionApi = suggestionApi;
+  }
+
   public static void main(String[] args) {
     Application app = new Application(getCsvFileWriter(), getSuggestionApi());
     app.run(args);
-  }
-
-  public Application(CsvFileWriter csvFileWriter,
-      SuggestionApi suggestionApi) {
-    this.csvFileWriter = csvFileWriter;
-    this.suggestionApi = suggestionApi;
   }
 
   private static SuggestionApi getSuggestionApi() {
