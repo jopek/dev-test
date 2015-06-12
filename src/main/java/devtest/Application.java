@@ -27,13 +27,7 @@ public class Application {
   }
 
   private static SuggestionApi getSuggestionApi() {
-    SuggestionApi api = new SuggestionApi() {
-      @Override
-      public List<SuggestDto> getSuggestionByName(String cityName) {
-        return new ArrayList<>();
-      }
-    };
-    return api;
+    return SuggestionApiFactory.createFake();
   }
 
   private static CsvFileWriter getCsvFileWriter() {
