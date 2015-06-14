@@ -6,9 +6,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import devtest.goeuro.dto.SuggestDto;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicStatusLine;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,14 +67,23 @@ public class SuggestionApiImplTest {
 
   private SuggestionApi suggestionApi;
 
+  private StatusLine statusLine;
+
+  private ProtocolVersion protocolVersion;
+
   @Before
   public void setup() {
     suggestionApi = new SuggestionApiImpl(httpClientFactory, jsonObjectMapper);
+    protocolVersion = new ProtocolVersion("HTTP", 1, 1);
     when(httpClientFactory.createHttpClient()).thenReturn(closeableHttpClient);
+
+    // default
+    statusLine = new BasicStatusLine(protocolVersion, 200, "OK");
+    when(closeableHttpResponse.getStatusLine()).thenReturn(statusLine);
   }
 
   @Test
-  public void makeCall() throws IOException {
+  public void makeCall() throws IOException, HttpException {
     when(closeableHttpClient.execute(any(HttpGet.class))).thenReturn(closeableHttpResponse);
     when(closeableHttpResponse.getEntity()).thenReturn(httpEntity);
     when(httpEntity.getContent()).thenReturn(inputStream);
@@ -78,6 +91,7 @@ public class SuggestionApiImplTest {
         thenReturn(suggestDtoList);
 
     suggestionApi.getSuggestionByName(CITY);
+
     verify(httpClientFactory).createHttpClient();
     verify(closeableHttpClient).execute(httpGetArgumentCaptor.capture());
     String actualGetUri = httpGetArgumentCaptor.getValue().getURI().toString();
@@ -86,15 +100,24 @@ public class SuggestionApiImplTest {
   }
 
   @Test(expected = IOException.class)
-  public void makeCallFailsBecauseTransportError() throws IOException {
+  public void makeCallFailsBecauseTransportError() throws IOException, HttpException {
     doThrow(new IOException()).when(closeableHttpClient).execute(any(HttpGet.class));
 
     suggestionApi.getSuggestionByName(CITY);
     verify(jsonObjectMapper, never()).readValue(eq(inputStream), any(TypeReference.class));
   }
 
+  @Test(expected = HttpException.class)
+  public void makeCallFailsBecauseStatusCodeOver400() throws IOException, HttpException {
+    when(closeableHttpClient.execute(any(HttpGet.class))).thenReturn(closeableHttpResponse);
+    when(closeableHttpResponse.getStatusLine()).thenReturn(new BasicStatusLine(protocolVersion, 500, "Internal Server Error"));
+
+    suggestionApi.getSuggestionByName(CITY);
+    verify(jsonObjectMapper, never()).readValue(eq(inputStream), any(TypeReference.class));
+  }
+
   @Test(expected = JsonParseException.class)
-  public void makeCallFailsBecauseJsonParsingError() throws IOException {
+  public void makeCallFailsBecauseJsonParsingError() throws IOException, HttpException {
     when(closeableHttpClient.execute(any(HttpGet.class))).thenReturn(closeableHttpResponse);
     when(closeableHttpResponse.getEntity()).thenReturn(httpEntity);
     when(httpEntity.getContent()).thenReturn(inputStream);

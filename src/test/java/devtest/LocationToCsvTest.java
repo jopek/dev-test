@@ -5,6 +5,7 @@ import devtest.goeuro.LocationType;
 import devtest.goeuro.SuggestionApi;
 import devtest.goeuro.dto.GeoPositionDto;
 import devtest.goeuro.dto.SuggestDto;
+import org.apache.http.HttpException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,7 @@ public class LocationToCsvTest {
   }
 
   @Test
-  public void queryApiAllOk() throws IOException {
+  public void queryApiAllOk() throws IOException, HttpException {
     when(suggestionApi.getSuggestionByName(anyString())).
         thenReturn(createSuggestDtoList(2));
     locationToCsv.execute(CITY);
@@ -52,14 +53,14 @@ public class LocationToCsvTest {
   }
 
   @Test
-  public void queryApiWithoutCityName() throws IOException {
+  public void queryApiWithoutCityName() throws IOException, HttpException {
     locationToCsv.execute("");
 
     verify(suggestionApi, never()).getSuggestionByName(anyString());
   }
 
   @Test
-  public void queryApiWithoutResults() throws IOException {
+  public void queryApiWithoutResults() throws IOException, HttpException {
     when(suggestionApi.getSuggestionByName(CITY)).thenReturn(anyListOf(SuggestDto.class));
     locationToCsv.execute(CITY);
 
@@ -68,8 +69,18 @@ public class LocationToCsvTest {
   }
 
   @Test
-  public void queryApiWithNetworkException() throws IOException {
+  public void queryApiWithNetworkException() throws IOException, HttpException {
     doThrow(new IOException("laaaa")).when(suggestionApi).getSuggestionByName(CITY);
+    locationToCsv.execute(CITY);
+
+    verify(suggestionApi).getSuggestionByName(CITY);
+    verify(csvFileWriter, never()).write(any(Suggestion.class));
+    verify(csvFileWriter, never()).close();
+  }
+
+  @Test
+  public void queryApiWithHttpException() throws IOException, HttpException {
+    doThrow(new HttpException("404: File not Found")).when(suggestionApi).getSuggestionByName(CITY);
     locationToCsv.execute(CITY);
 
     verify(suggestionApi).getSuggestionByName(CITY);

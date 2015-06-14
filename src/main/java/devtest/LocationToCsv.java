@@ -5,6 +5,8 @@ import devtest.entities.Suggestion;
 import devtest.entities.SuggestionConverter;
 import devtest.goeuro.SuggestionApi;
 import devtest.goeuro.dto.SuggestDto;
+import org.apache.http.ConnectionClosedException;
+import org.apache.http.HttpException;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.List;
  * Date: 09.06.15
  */
 public class LocationToCsv {
+
+  public static final String COULD_NOT_FETCH = "could not fetch suggestions: ";
 
   private final SuggestionApi suggestionApi;
 
@@ -31,16 +35,22 @@ public class LocationToCsv {
     List<SuggestDto> dtos = null;
     try {
       dtos = suggestionApi.getSuggestionByName(locationQueryName);
+    } catch (ConnectionClosedException e) {
+      System.out.println(COULD_NOT_FETCH + "HTTP connection closed before content could be read");
+      return;
     } catch (IOException e) {
-      System.out.println("could not fetch suggestions: " + ((e.getCause() != null) ? e.getCause() : e.toString()));
+      System.out.println(COULD_NOT_FETCH + ((e.getCause() != null) ? e.getCause().getMessage() : e.toString()));
+      return;
+    } catch (HttpException e) {
+      System.out.println(COULD_NOT_FETCH + ((e.getCause() != null) ? e.getCause() : e.toString()));
       return;
     }
 
     if (dtos.isEmpty()) {
-      System.out.println("empty list of suggestions");
+      System.out.println(String.format("no suggestions found for '%s'", locationQueryName));
       return;
     } else {
-      System.out.println(String.format("found %d suggestions", dtos.size()));
+      System.out.println(String.format("found %d suggestions for '%s'", dtos.size(), locationQueryName));
     }
 
     try {
