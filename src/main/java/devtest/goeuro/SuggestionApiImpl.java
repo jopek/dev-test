@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import devtest.goeuro.dto.SuggestDto;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
-import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -14,16 +13,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
  */
 
 public class SuggestionApiImpl implements SuggestionApi {
-    public static String API_URL = "http://api.goeuro.com/api/v2/position/suggest/en/%s";
-//  public static String API_URL = "http://localhost:8000/apiresponses_empty.json";
-//  public static String API_URL = "http://localhost:8000/apiresponses_bkk.json";
-//  public static String API_URL = "http://localhost:8000/apiresponses.json.nonexistent";
+  public static String API_URL = "http://api.goeuro.com/api/v2/position/suggest/en/%s";
 
   private HttpClientFactory httpClientFactory;
 
@@ -36,7 +33,7 @@ public class SuggestionApiImpl implements SuggestionApi {
 
   @Override
   public List<SuggestDto> getSuggestionByName(String cityName) throws IOException, HttpException {
-    InputStream content = retrieveContent(String.format(API_URL, cityName));
+    InputStream content = retrieveContent(String.format(getApiUrl(), cityName));
     return mapper.readValue(content, new TypeReference<List<SuggestDto>>() {});
   }
 
@@ -56,6 +53,17 @@ public class SuggestionApiImpl implements SuggestionApi {
     HttpEntity entity = response.getEntity();
 
     return entity.getContent();
+  }
+
+  private String getApiUrl() {
+    Properties properties = System.getProperties();
+    String apiUrl = properties.getProperty("apiurl");
+
+    if (apiUrl != null) {
+      return apiUrl;
+    }
+
+    return API_URL;
   }
 
 }
