@@ -31,7 +31,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
- * Created with IntelliJ IDEA.
+ * Unit test for {@link SuggestionApiImpl}
  */
 
 @RunWith(MockitoJUnitRunner.class)
@@ -110,7 +110,8 @@ public class SuggestionApiImplTest {
   @Test(expected = HttpException.class)
   public void makeCallFailsBecauseStatusCodeOver400() throws IOException, HttpException {
     when(closeableHttpClient.execute(any(HttpGet.class))).thenReturn(closeableHttpResponse);
-    when(closeableHttpResponse.getStatusLine()).thenReturn(new BasicStatusLine(protocolVersion, 500, "Internal Server Error"));
+    when(closeableHttpResponse.getStatusLine()).
+        thenReturn(new BasicStatusLine(protocolVersion, 500, "Internal Server Error"));
 
     suggestionApi.getSuggestionByName(CITY);
     verify(jsonObjectMapper, never()).readValue(eq(inputStream), any(TypeReference.class));

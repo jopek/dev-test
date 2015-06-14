@@ -1,7 +1,8 @@
 package devtest.goeuro.dto;
 
 /**
- * Date: 09.06.15
+ * Nested geographic positional data inside {@link SuggestDto}.
+ * Contains only latitude and longitude.
  */
 public class GeoPositionDto {
 

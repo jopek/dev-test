@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import devtest.goeuro.LocationType;
 
 /**
- * Date: 09.06.15
+ * direct mapping of api endpoint returned JSON to data transfer object / plain old java object
  */
 public class SuggestDto {
   private boolean coreCountry;

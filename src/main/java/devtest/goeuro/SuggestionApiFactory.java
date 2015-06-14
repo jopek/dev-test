@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
+ * Factory for returning implementations of the {@link SuggestionApi} interface
  */
 public class SuggestionApiFactory {
 
@@ -15,6 +15,10 @@ public class SuggestionApiFactory {
 
   private static HttpClientFactory httpClientFactory = new HttpClientFactory();
 
+  /**
+   * create fake / null implementation: getSuggestionByName(String cityName) always returns empty list
+   * @return
+   */
   public static SuggestionApi createFake() {
     return new SuggestionApi() {
       @Override
@@ -24,6 +28,10 @@ public class SuggestionApiFactory {
     };
   }
 
+  /**
+   * create implementation that queries endpoints via HTTP
+   * @return
+   */
   public static SuggestionApi createImpl() {
     return new SuggestionApiImpl(httpClientFactory, jsonObjectMapper);
   }

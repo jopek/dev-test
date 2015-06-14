@@ -21,7 +21,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
- * This test focuses on the {@link LocationToCsv} converter functionality.
+ * This test focuses on the {@link LocationToCsv} "glue" functionality and general exception handling.
  */
 
 @RunWith(MockitoJUnitRunner.class)

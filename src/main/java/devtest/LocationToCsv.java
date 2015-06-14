@@ -12,7 +12,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Date: 09.06.15
+ * This class acts as the main "glue" between retrieving location suggestions and writing CSV files.
+ * It handles all kinds of exceptions and passes data around
  */
 public class LocationToCsv {
 
@@ -27,6 +28,11 @@ public class LocationToCsv {
     this.writer = writer;
   }
 
+  /**
+   * run query on passed in suggestion api query object (any implementation of the {@link SuggestionApi} interface)
+   *
+   * @param locationQueryName preferably non empty location string
+   */
   public void execute(String locationQueryName) {
     if (locationQueryName.isEmpty()) {
       return;

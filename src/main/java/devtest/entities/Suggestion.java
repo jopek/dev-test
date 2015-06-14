@@ -1,7 +1,7 @@
 package devtest.entities;
 
 /**
- * Date: 09.06.15
+ * POJO containing only information to be written to CSV file.
  */
 public class Suggestion {
   private int id;

@@ -4,7 +4,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 /**
- * Created with IntelliJ IDEA.
+ * HTTP client factory - convenience class for possibility of returning mocks during tests
  */
 public class HttpClientFactory {
 

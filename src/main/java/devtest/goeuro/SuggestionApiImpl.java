@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Created with IntelliJ IDEA.
+ * Implementation of Suggestion API endpoint Query.
  */
 
 public class SuggestionApiImpl implements SuggestionApi {
@@ -55,6 +55,11 @@ public class SuggestionApiImpl implements SuggestionApi {
     return entity.getContent();
   }
 
+  /**
+   * use system property "apiurl" - passed in via command line: java -Dapiurl=http://something/else.api
+   *
+   * @return
+   */
   private String getApiUrl() {
     Properties properties = System.getProperties();
     String apiUrl = properties.getProperty("apiurl");

@@ -1,13 +1,9 @@
 package devtest;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import devtest.goeuro.SuggestionApi;
 import devtest.goeuro.SuggestionApiFactory;
-import devtest.goeuro.dto.SuggestDto;
 
 import java.io.IOException;
-import java.util.List;
 
 public class Application {
 
@@ -28,7 +24,6 @@ public class Application {
   }
 
   private static SuggestionApi getSuggestionApi() {
-//    return SuggestionApiFactory.createFake();
     return SuggestionApiFactory.createImpl();
   }
 

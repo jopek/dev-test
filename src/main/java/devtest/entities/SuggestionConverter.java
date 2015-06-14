@@ -3,12 +3,18 @@ package devtest.entities;
 import devtest.goeuro.dto.SuggestDto;
 
 /**
- * To change this template use File | Settings | File Templates.
+ * helper class to pick out relevant information.
  */
 public class SuggestionConverter {
-  public static Suggestion toEntity(SuggestDto dto){
-    return new Suggestion(
-        dto.getId(),
+
+  /**
+   * convert {@link SuggestDto} to {@link Suggestion} entity
+   *
+   * @param dto
+   * @return
+   */
+  public static Suggestion toEntity(SuggestDto dto) {
+    return new Suggestion(dto.getId(),
         dto.getGeoPosition().getLatitude(),
         dto.getGeoPosition().getLongitude(),
         dto.getName(),

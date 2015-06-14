@@ -6,9 +6,6 @@ import devtest.entities.Suggestion;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- * Date: 09.06.15
- */
 public class CsvFileWriter {
   FileWriter fileWriter;
 
