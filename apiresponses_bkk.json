@@ -1,0 +1,56 @@
+[
+    {
+        "_id": 406676,
+        "coreCountry": false,
+        "country": "Thailand",
+        "countryCode": "TH",
+        "distance": null,
+        "fullName": "Bangkok, Thailand",
+        "geo_position": {
+            "latitude": 13.75398,
+            "longitude": 100.50144
+        },
+        "iata_airport_code": null,
+        "inEurope": false,
+        "key": null,
+        "locationId": 38910,
+        "name": "Bangkok",
+        "type": "location"
+    },
+    {
+        "_id": 315577,
+        "coreCountry": false,
+        "country": "Thailand",
+        "countryCode": "TH",
+        "distance": null,
+        "fullName": "Bangkok (BKK), Thailand",
+        "geo_position": {
+            "latitude": 13.6923,
+            "longitude": 100.7507
+        },
+        "iata_airport_code": "BKK",
+        "inEurope": false,
+        "key": null,
+        "locationId": null,
+        "name": "Bangkok",
+        "type": "airport"
+    },
+    {
+        "_id": 315578,
+        "coreCountry": false,
+        "country": "Thailand",
+        "countryCode": "TH",
+        "distance": null,
+        "fullName": "Bangkok Don Muang (DMK), Thailand",
+        "geo_position": {
+            "latitude": 13.91366,
+            "longitude": 100.5992
+        },
+        "iata_airport_code": "DMK",
+        "inEurope": false,
+        "key": null,
+        "locationId": null,
+        "name": "Bangkok Don Muang",
+        "type": "airport"
+    }
+]
