@@ -8,7 +8,6 @@ import devtest.goeuro.dto.SuggestDto;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -37,7 +36,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class SuggestionApiImplTest {
 
-  private static String CITY = "some_city";
+  private static final String CITY = "some_city";
 
   @Mock
   private HttpClientFactory httpClientFactory;
@@ -67,8 +66,6 @@ public class SuggestionApiImplTest {
 
   private SuggestionApi suggestionApi;
 
-  private StatusLine statusLine;
-
   private ProtocolVersion protocolVersion;
 
   @Before
@@ -78,8 +75,8 @@ public class SuggestionApiImplTest {
     when(httpClientFactory.createHttpClient()).thenReturn(closeableHttpClient);
 
     // default
-    statusLine = new BasicStatusLine(protocolVersion, 200, "OK");
-    when(closeableHttpResponse.getStatusLine()).thenReturn(statusLine);
+    when(closeableHttpResponse.getStatusLine()).
+        thenReturn(new BasicStatusLine(protocolVersion, 200, "OK"));
   }
 
   @Test

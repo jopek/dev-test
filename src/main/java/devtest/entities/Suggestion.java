@@ -4,11 +4,11 @@ package devtest.entities;
  * POJO containing only information to be written to CSV file.
  */
 public class Suggestion {
-  private int id;
-  private String name;
-  private String type;
-  private double latitude;
-  private double longitude;
+  private final int id;
+  private final String name;
+  private final String type;
+  private final double latitude;
+  private final double longitude;
 
   public Suggestion(int id, double latitude, double longitude, String name, String type) {
     this.id = id;
@@ -16,26 +16,6 @@ public class Suggestion {
     this.longitude = longitude;
     this.name = name;
     this.type = type;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public double getLatitude() {
-    return latitude;
-  }
-
-  public double getLongitude() {
-    return longitude;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getType() {
-    return type;
   }
 
   public String toCsv() {

@@ -7,11 +7,11 @@ import java.io.IOException;
 
 public class Application {
 
-  public static String csvFilename = "goeuro_test.csv";
+  private static final String csvFilename = "goeuro_test.csv";
 
-  private CsvFileWriter csvFileWriter;
+  private final CsvFileWriter csvFileWriter;
 
-  private SuggestionApi suggestionApi;
+  private final SuggestionApi suggestionApi;
 
   public Application(CsvFileWriter csvFileWriter, SuggestionApi suggestionApi) {
     this.csvFileWriter = csvFileWriter;

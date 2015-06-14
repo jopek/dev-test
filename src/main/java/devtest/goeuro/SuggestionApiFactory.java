@@ -11,9 +11,9 @@ import java.util.List;
  */
 public class SuggestionApiFactory {
 
-  private static ObjectMapper jsonObjectMapper = new ObjectMapper();
+  private static final ObjectMapper jsonObjectMapper = new ObjectMapper();
 
-  private static HttpClientFactory httpClientFactory = new HttpClientFactory();
+  private static final HttpClientFactory httpClientFactory = new HttpClientFactory();
 
   /**
    * create fake / null implementation: getSuggestionByName(String cityName) always returns empty list

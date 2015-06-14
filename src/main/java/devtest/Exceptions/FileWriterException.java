@@ -3,11 +3,7 @@ package devtest.Exceptions;
 import java.io.IOException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: pron
- * Date: 10.06.15
- * Time: 13:07
- * To change this template use File | Settings | File Templates.
+ * Exception to be thrown whenever the {@link devtest.CsvFileWriter} encounters an error.
  */
 public class FileWriterException extends IOException {
   public FileWriterException(String message) {

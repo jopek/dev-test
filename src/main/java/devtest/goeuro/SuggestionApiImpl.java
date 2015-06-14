@@ -20,11 +20,11 @@ import java.util.Properties;
  */
 
 public class SuggestionApiImpl implements SuggestionApi {
-  public static String API_URL = "http://api.goeuro.com/api/v2/position/suggest/en/%s";
+  public static final String API_URL = "http://api.goeuro.com/api/v2/position/suggest/en/%s";
 
-  private HttpClientFactory httpClientFactory;
+  private final HttpClientFactory httpClientFactory;
 
-  private ObjectMapper mapper;
+  private final ObjectMapper mapper;
 
   public SuggestionApiImpl(HttpClientFactory httpClientFactory, ObjectMapper mapper) {
     this.httpClientFactory = httpClientFactory;

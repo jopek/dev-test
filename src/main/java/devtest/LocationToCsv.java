@@ -38,7 +38,7 @@ public class LocationToCsv {
       return;
     }
 
-    List<SuggestDto> dtos = null;
+    List<SuggestDto> dtos;
     try {
       dtos = suggestionApi.getSuggestionByName(locationQueryName);
     } catch (ConnectionClosedException e) {
