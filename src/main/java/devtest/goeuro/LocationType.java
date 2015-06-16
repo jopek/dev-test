@@ -5,5 +5,6 @@ package devtest.goeuro;
  */
 public enum LocationType {
   location,
-  airport
+  airport,
+  unknown;
 }

@@ -1,5 +1,7 @@
 package devtest.entities;
 
+import devtest.goeuro.LocationType;
+import devtest.goeuro.dto.GeoPositionDto;
 import devtest.goeuro.dto.SuggestDto;
 
 /**
@@ -14,10 +16,31 @@ public class SuggestionConverter {
    * @return
    */
   public static Suggestion toEntity(SuggestDto dto) {
-    return new Suggestion(dto.getId(),
-        dto.getGeoPosition().getLatitude(),
-        dto.getGeoPosition().getLongitude(),
-        dto.getName(),
-        dto.getType().toString());
+    if (dto == null) {
+      dto = new SuggestDto();
+    }
+
+    GeoPositionDto geoPosition = dto.getGeoPosition();
+    double latitude;
+    double longitude;
+
+    if (geoPosition == null) {
+      latitude = 0;
+      longitude = 0;
+    } else {
+      latitude = geoPosition.getLatitude();
+      longitude = geoPosition.getLongitude();
+    }
+
+    String type;
+    LocationType locationType = dto.getType();
+
+    if (locationType == null) {
+      type = LocationType.unknown.toString();
+    } else {
+      type = locationType.toString();
+    }
+
+    return new Suggestion(dto.getId(), latitude, longitude, dto.getName(), type);
   }
 }
