@@ -90,7 +90,7 @@ The build tool of choice is Gradle.
 ## using the tool
 
 [Gradle](https://gradle.org/) is required to compile the sources.
-Otherwise, if you don't want to compile from sources, download the [fat jar](https://github.com/jopek/dev-test/releases/download/1.0.0/GoEuroTest.jar) and run the following command:
+Otherwise, if you don't want to compile from sources, download the [fat jar](https://github.com/jopek/dev-test/releases/download/1.0.1/GoEuroTest.jar) and run the following command:
 
     java -jar GoEuroTest.jar "CITY_NAME"
 
