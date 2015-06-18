@@ -1,3 +1,24 @@
+Proposed solution
+=================
+
+This solution does not involve any application frameworks.
+It uses libraries for the HTTP client and JSON conversion, Apache HttpComponents Client and FasterXML jackson respectively.
+The build tool of choice is Gradle.
+
+## using the tool
+
+[Gradle](https://gradle.org/) is required to compile the sources.
+Otherwise, if you don't want to compile from sources, download the [fat jar](https://github.com/jopek/dev-test/releases/download/1.0.1/GoEuroTest.jar) and run the following command:
+
+    java -jar GoEuroTest.jar "CITY_NAME"
+
+In case you have another webservice running that responds with the same JSON structure, you can pass the ```apiurl``` property:
+
+    java -Dapiurl=http://localhost:8000/apiresponses_bkk.json -jar GoEuroTest.jar "CITY_NAME"
+
+(In this particular example, the "CITY_NAME" is not passed to the URL. The first found ```%s``` will be replaced with the "CITY_NAME": ```java -Dapiurl=http://localhost:8000/rest_%s.json -jar GoEuroTest.jar berlin``` will call ```http://localhost:8000/rest_berlin.json``` )
+
+
 Java Developer Test
 ===================
 
@@ -79,23 +100,3 @@ Please implement your solution as a stand alone application which can be started
 Also send us the source code to your solution. We use GitHub, so if you put your source code into a GitHub repository, it will make our life easier.
 We will evaluate your source code as well as the functionality of the program: Does it run, how does it handle errors, how well-engineered is the architecture etc.
 Thank you!
-
-Proposed solution
-=================
-
-This solution does not involve any application frameworks.
-It uses libraries for the HTTP client and JSON conversion, Apache HttpComponents Client and FasterXML jackson respectively.
-The build tool of choice is Gradle.
-
-## using the tool
-
-[Gradle](https://gradle.org/) is required to compile the sources.
-Otherwise, if you don't want to compile from sources, download the [fat jar](https://github.com/jopek/dev-test/releases/download/1.0.1/GoEuroTest.jar) and run the following command:
-
-    java -jar GoEuroTest.jar "CITY_NAME"
-
-In case you have another webservice running that responds with the same JSON structure, you can pass the ```apiurl``` property:
-
-    java -Dapiurl=http://localhost:8000/apiresponses_bkk.json -jar GoEuroTest.jar "CITY_NAME"
-
-(In this particular example, the "CITY_NAME" is not passed to the URL. The first found ```%s``` will be replaced with the "CITY_NAME": ```java -Dapiurl=http://localhost:8000/rest_%s.json -jar GoEuroTest.jar berlin``` will call ```http://localhost:8000/rest_berlin.json``` )
